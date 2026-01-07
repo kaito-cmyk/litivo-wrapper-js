@@ -1,0 +1,22 @@
+{
+  "name": "litivo-wrapper-js",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "CesarZHX <112836949+CesarZHX@users.noreply.github.com> (https://github.com/CesarZHX/)",
+  "license": "ISC",
+  "packageManager": "pnpm@10.27.0",
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "playwright": "^1.57.0"
+  }
+}
