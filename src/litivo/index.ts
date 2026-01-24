@@ -1,8 +1,3 @@
-import { handleError } from './errors.js';
-import { navigate } from './page.js';
+import { Litivo } from './wrapper.js';
 
-async function main(): Promise<void> {
-  await navigate();
-}
-
-main().catch(handleError);
+export { Litivo };

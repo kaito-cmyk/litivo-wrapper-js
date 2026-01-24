@@ -2,27 +2,50 @@
   "name": "litivo-wrapper-js",
   "version": "0.1.3",
   "type": "module",
-  "description": "",
-  "main": "index.js",
+  "description": "Wrapper for Litivo platform automation",
+  "main": "./dist/litivo/index.js",
+  "types": "./dist/litivo/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/litivo/index.d.ts",
+      "import": "./dist/litivo/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "main": "tsx src/litivo",
+    "build": "tsc",
+    "example": "tsx example",
     "test": "vitest run && playwright test",
     "test:unit": "vitest",
     "test:e2e": "playwright test",
     "test:ui": "playwright test --ui"
   },
-  "keywords": [],
+  "keywords": [
+    "playwright",
+    "automation",
+    "litivo",
+    "testing",
+    "wrapper"
+  ],
   "author": "CesarZHX <112836949+CesarZHX@users.noreply.github.com> (https://github.com/CesarZHX/)",
-  "license": "ISC",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CesarZHX/litivo-wrapper-js.git"
+  },
   "packageManager": "pnpm@10.28.1+sha512.7d7dbbca9e99447b7c3bf7a73286afaaf6be99251eb9498baefa7d406892f67b879adb3a1d7e687fc4ccc1a388c7175fbaae567a26ab44d1067b54fcb0d6a316",
   "devDependencies": {
     "@playwright/test": "^1.58.0",
     "@types/node": "^25.0.10",
+    "env-var": "^7.5.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"
   },
   "dependencies": {
-    "playwright": "^1.58.0"
+    "playwright": "^1.58.0",
+    "zod": "^4.3.6"
   }
 }

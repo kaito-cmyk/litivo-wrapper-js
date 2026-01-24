@@ -52,5 +52,5 @@
     "moduleResolution": "nodenext",
     "forceConsistentCasingInFileNames": true,
   },
-  "include": ["src", "tests"],
+  "include": ["src", "tests", "example"],
 }
