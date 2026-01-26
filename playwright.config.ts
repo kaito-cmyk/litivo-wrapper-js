@@ -1,5 +1,4 @@
 import { defineConfig } from '@playwright/test';
-import { config } from 'dotenv';
 
 export default defineConfig({
   testDir: './tests/e2e', // Folder where Playwright will look for tests
@@ -26,4 +25,4 @@ export default defineConfig({
   reporter: 'html',
 });
 
-config();
+process.loadEnvFile();
