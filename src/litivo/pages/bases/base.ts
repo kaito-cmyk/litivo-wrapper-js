@@ -1,17 +1,18 @@
 import type { Page } from 'playwright';
 
 export abstract class BasePage {
-  protected abstract readonly url: string;
+  protected abstract readonly url: URL;
 
   public constructor(protected readonly page: Page) {}
 
   /** Navigate to the page's URL if not already there. */
-  public async goto(url: string = this.url): Promise<void> {
+  public async goto(url: URL = this.url): Promise<void> {
     const page: Page = this.page;
-    if (page.url() !== url) {
-      await page.goto(url);
+    const href: string = url.href;
+    if (page.url() !== href) {
+      await page.goto(href);
     }
-    await page.waitForURL(url);
+    await page.waitForURL(href);
   }
 
   /** Take a screenshot of the current page. */

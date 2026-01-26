@@ -13,8 +13,7 @@ export class Header {
   public async logout(): Promise<void> {
     const page: Page = this.page;
     await this.appPerfil.click();
-    const url = page.url();
     await this.logoutButton.click();
-    await page.waitForURL((newUrl) => newUrl.toString() !== url); // TODO: May be and interface method.
+    await page.waitForURL((newUrl) => newUrl.href !== page.url()); // TODO: Consider refactoring into an interface method.
   }
 }

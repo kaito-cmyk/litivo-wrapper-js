@@ -1,9 +1,10 @@
 import type { Locator, Page } from 'playwright';
+import { WRAPPER_URL } from '../constants.js';
 import { FootedPage } from './bases/footed.js';
 
 /** Page object for the Litivo login page. */
 export class LoginPage extends FootedPage {
-  protected readonly url: string = 'https://www.litivo.com/auth/login';
+  protected readonly url: URL = new URL('/auth/login', WRAPPER_URL);
 
   private readonly emailInput!: Locator;
   private readonly passwordInput!: Locator;
@@ -23,6 +24,6 @@ export class LoginPage extends FootedPage {
     await this.emailInput.fill(username);
     await this.passwordInput.fill(password);
     await this.submitButton.click();
-    await this.page.waitForURL((url) => url.toString() !== this.url);
+    await this.page.waitForURL((url) => url.href !== this.url.href);
   }
 }

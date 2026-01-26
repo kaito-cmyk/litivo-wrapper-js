@@ -21,11 +21,10 @@ export class Litivo {
     await loginPage.login(email, password);
 
     const dashboardPage = new DashboardPage(page);
+    await dashboardPage.goto();
 
     this.authenticatedPage = dashboardPage;
     this.page = page;
-
-    await dashboardPage.goto(); // Ensure we're on the dashboard page.
   }
 
   public async logout(): Promise<void> {
@@ -45,5 +44,9 @@ export class Litivo {
   /** Wait for a specific timeout in milliseconds. */
   public waitforTimeout(timeout: number): Promise<void> {
     return this.authenticatedPage.waitForTimeout(timeout);
+  }
+
+  public getPage(): Page {
+    return this.page;
   }
 }
