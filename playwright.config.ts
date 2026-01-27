@@ -1,3 +1,12 @@
+
+
+
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Siempre busca el .env en la raíz del proyecto
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
@@ -7,6 +16,10 @@ export default defineConfig({
   // Allows all tests to run in parallel (faster execution)
   // Good only if tests do not depend on each other
   fullyParallel: true,
+  
+  use: {
+    headless: false, // Mostrar navegador en pantalla
+  },
 
   // If running in CI, fail the build if test.only is found
   // Prevents accidentally running only one test in production
@@ -25,4 +38,3 @@ export default defineConfig({
   reporter: 'html',
 });
 
-process.loadEnvFile();

@@ -20,7 +20,8 @@
     "test": "vitest run && playwright test",
     "test:unit": "vitest",
     "test:e2e": "playwright test",
-    "test:ui": "playwright test --ui"
+    "test:ui": "playwright test --ui",
+    "login:litivo": "playwright test tests/e2e/wrapper.spec.ts"
   },
   "keywords": [
     "playwright",
@@ -45,6 +46,7 @@
     "vitest": "^4.0.18"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "playwright": "^1.58.0",
     "zod": "^4.3.6"
   }
