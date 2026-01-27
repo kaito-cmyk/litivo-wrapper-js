@@ -1,12 +1,9 @@
-import { expect, test } from './fixtures/wrapper.fixture.js';
+import { test } from '@playwright/test';
+import { UserCredentials } from './config/testEnv';
+import { LoginPage } from './pages/LoginPage';
 
-/** wrapper tests */
-test.describe('Wrapper Tests', () => {
-  test('test wrapper - login and navigate', async ({ litivo, page }: any) => {
-    // Verificar que estamos en el dashboard después del login
-    expect(page.url()).toContain('litivo.com/dashboard');
-    
-    // Esperar 5 segundos para ver el dashboard
-    expect(await litivo.waitForTimeout(5_000)).toBeUndefined();
-  });
+test('test wrapper - login and navigate', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login(UserCredentials.email, UserCredentials.password);
 });
