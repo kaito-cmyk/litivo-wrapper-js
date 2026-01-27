@@ -1,4 +1,6 @@
 import dotenv from 'dotenv';
+dotenv.config();
+
 import path from 'path';
 
 // Siempre busca el .env en la raíz del proyecto
