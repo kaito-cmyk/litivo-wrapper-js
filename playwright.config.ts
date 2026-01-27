@@ -18,6 +18,7 @@ export default defineConfig({
   
   use: {
     headless: false, // Mostrar navegador en pantalla
+    baseURL: 'http://localhost:3000', // Ajusta según tu aplicación
   },
 
   // If running in CI, fail the build if test.only is found
