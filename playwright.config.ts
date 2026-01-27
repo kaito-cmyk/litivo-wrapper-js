@@ -1,6 +1,3 @@
-
-
-
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -36,5 +33,9 @@ export default defineConfig({
   // Generate an HTML report after tests finish
   // You can open it with: npx playwright show-report
   reporter: 'html',
+  projects: [
+    { name: 'chromium', use: { browserName: 'chromium' } },
+  ],
+  globalSetup: './playwright.global-setup.ts',
 });
 
