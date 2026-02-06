@@ -38,12 +38,13 @@ This project is intended for **personal use and learning purposes**.
 ### Library
 
 ```bash
-npm install https://github.com/CesarZHX/litivo-wrapper-js
+npm install litivo-wrapper
 ```
 
-### Dependency:
+### Requirements:
 
 ```bash
+npm install playwright
 npx playwright install
 ```
 
