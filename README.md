@@ -50,6 +50,12 @@ npx playwright install
 
 ---
 
+## 🧪 Example
+
+[See the full example here](./example/main.ts) 📄
+
+---
+
 ## 🤝 Collaboration
 
 - This wrapper is **unofficial**
@@ -63,6 +69,12 @@ npx playwright install
 This project is licensed under the **Apache License 2.0**.
 
 You are free to use, modify, and distribute it under the terms of that license.
+
+---
+
+## ⚠️ TODO
+
+- [ ] Add CI/CD pipeline to automatically publish updates to npm using GitHub Actions
 
 ---
 
