@@ -104,6 +104,8 @@ class DebtorSection extends BaseSection<[DebtorType[]]> {
 
       // breakpoint
 
+      /** 
+
       // Address fields
       if (debtor.address) {
         if (debtor.address.country) {
@@ -144,12 +146,8 @@ class DebtorSection extends BaseSection<[DebtorType[]]> {
       }
 
       // Contact
-      if (debtor.primaryPhone) {
-        await page.locator('input[formcontrolname="telefono1"]').fill(debtor.primaryPhone);
-      }
-      if (debtor.cellPhone) {
-        await page.locator('input[formcontrolname="celular1"]').fill(debtor.cellPhone);
-      }
+      // if (debtor.primaryPhone) { await page.locator('input[formcontrolname="telefono1"]').fill(debtor.primaryPhone); }
+      // if (debtor.cellPhone) { await page.locator('input[formcontrolname="celular1"]').fill(debtor.cellPhone); }
       if (typeof debtor.knowsEmail === 'boolean') {
         const checkbox = page.locator(
           'label[formcontrolname="conoceEmail"] input[type="checkbox"]',
@@ -162,9 +160,7 @@ class DebtorSection extends BaseSection<[DebtorType[]]> {
       if (debtor.primaryEmail) {
         await page.locator('input[formcontrolname="email1"]').fill(debtor.primaryEmail);
       }
-      if (debtor.webPage1) {
-        await page.locator('input[formcontrolname="paginaWeb1"]').fill(debtor.webPage1);
-      }
+      // if (debtor.webPage1) { await page.locator('input[formcontrolname="paginaWeb1"]').fill(debtor.webPage1); }
 
       // Person type (Comerciante checkbox)
       if (typeof debtor.isMerchant === 'boolean') {
@@ -198,6 +194,8 @@ class DebtorSection extends BaseSection<[DebtorType[]]> {
 
       // Give a small pause to let UI react
       await page.waitForTimeout(300);
+
+      */
     }
   }
 }

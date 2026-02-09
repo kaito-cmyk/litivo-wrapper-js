@@ -1,6 +1,6 @@
 {
   "name": "litivo-wrapper",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "type": "module",
   "description": "Litivo Wrapper.",
   "main": "./dist/index.js",
