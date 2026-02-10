@@ -3,6 +3,8 @@ import { getDateInputSelector, getInputSelector } from '../../helpers.js';
 import type { DebtorType, IdDocType } from '../../models/debtor.js';
 import BaseSection from '../bases/section.js';
 
+const plusSpanSelector: string = '+ span.ant-input-suffix';
+
 /**
  * TODO: Debtor (feat: extend create insolvency method with debtor section)
  * TODO: check the next BUSINESS LOGIC: Debtors can have just one insolvency application at a time.
@@ -27,6 +29,15 @@ class DebtorSection extends BaseSection<[DebtorType[]]> {
   private readonly birthDateInput: Locator;
   private readonly ethnicityInput: Locator;
   private readonly disabilityInput: Locator;
+  private readonly residenceCountryInput: Locator;
+  private readonly departmentInput: Locator;
+  private readonly cityInput: Locator;
+  private readonly roadTypeInput: Locator;
+  private readonly roadNameInput: Locator;
+  private readonly roadNumberInput: Locator;
+  private readonly roadSubNumberInput: Locator;
+  private readonly roadDetailsInput: Locator;
+  private readonly roadStratumInput: Locator;
 
   public constructor(page: Page) {
     super(page);
@@ -48,6 +59,15 @@ class DebtorSection extends BaseSection<[DebtorType[]]> {
     this.birthDateInput = page.locator(getDateInputSelector('fechaNacimiento'));
     this.ethnicityInput = page.locator(getInputSelector('etnia'));
     this.disabilityInput = page.locator(getInputSelector('discapacidad'));
+    this.residenceCountryInput = page.locator(getInputSelector('paisResidencia'));
+    this.departmentInput = page.locator(getInputSelector('departamento'));
+    this.cityInput = page.locator(getInputSelector('ciudad'));
+    this.roadTypeInput = page.locator(getInputSelector('razonSocial'));
+    this.roadNameInput = page.locator('input[formcontrolname="a1"]');
+    this.roadNumberInput = page.locator('input[formcontrolname="a2"]');
+    this.roadSubNumberInput = page.locator('input[formcontrolname="a3"]');
+    this.roadDetailsInput = page.locator('input[formcontrolname="detalleDireccion"]');
+    this.roadStratumInput = page.locator(getInputSelector('estrato'));
   }
   public async send(debtors: DebtorType[]): Promise<void> {
     const page = this.page;
@@ -57,11 +77,36 @@ class DebtorSection extends BaseSection<[DebtorType[]]> {
       const docType: string = idDoc.type;
       const docNumber: string = idDoc.number;
       const docFilePath: string = idDoc.filePath;
-      const middleName: string | undefined = debtor.middleName;
-      const secondLastName: string | undefined = debtor.secondLastName;
+      const middleName: string = debtor.middleName || '';
+      const secondLastName: string = debtor.secondLastName || '';
       const civilStatus: string | undefined = debtor.civilStatus;
       const ethnicity: string | undefined = debtor.ethnicity;
       const disability: string | undefined = debtor.disability;
+      const residenceCountry: string = debtor.residenceCountry;
+      const roadType: string | undefined = debtor.roadType;
+      const roadName: string = debtor.roadName || '';
+      const roadNumber: string | undefined = debtor.roadNumber;
+      const roadSubNumber: string | undefined = debtor.roadSubNumber;
+      const roadDetails: string = debtor.roadDetails || '';
+      const roadStratum: string | undefined = debtor.roadStratum;
+
+      const hasJudicialNotificationAddress: boolean =
+        roadType !== undefined ||
+        roadName !== '' ||
+        roadDetails !== '' ||
+        roadStratum !== undefined;
+      if (hasJudicialNotificationAddress) {
+        if (roadNumber === undefined) {
+          throw new Error('roadNumber is required when hasJudicialNotificationAddress is true');
+        }
+        if (roadSubNumber === undefined) {
+          throw new Error('subNumber is required when hasJudicialNotificationAddress is true');
+        }
+      }
+      const telephones: string[] = debtor.telephones || [];
+      const cellphones: string[] = debtor.cellphones || [];
+      const emailsOrReason: string | string[] = debtor.emailsOrReason;
+      const webPages: string[] = debtor.webPages || [];
 
       await this.addDebtorButton.click();
 
@@ -73,11 +118,11 @@ class DebtorSection extends BaseSection<[DebtorType[]]> {
       await this.fillInput(this.originCountryInput, debtor.originCountry);
 
       await this.firstNameInput.fill(debtor.firstName);
-      if (middleName !== undefined) {
+      if (middleName !== '') {
         await this.middleNameInput.fill(middleName);
       }
       await this.lastNameInput.fill(debtor.lastName);
-      if (secondLastName !== undefined) {
+      if (secondLastName !== '') {
         await this.secondLastNameInput.fill(secondLastName);
       }
 
@@ -96,6 +141,94 @@ class DebtorSection extends BaseSection<[DebtorType[]]> {
       if (disability !== undefined) {
         await this.selectDescriptedOption(this.disabilityInput, disability);
       }
+      const residenceCountryInputValue = await this.residenceCountryInput.innerText();
+      if (residenceCountryInputValue !== residenceCountry) {
+        await this.fillInput(this.residenceCountryInput, residenceCountry);
+      }
+      await this.fillInput(this.departmentInput, debtor.department);
+      await this.fillInput(this.cityInput, debtor.city);
+
+      if (roadType !== undefined) {
+        await this.selectOption(this.roadTypeInput, roadType);
+      }
+      if (roadName !== '') {
+        await this.roadNameInput.fill(roadName);
+      }
+      if (roadNumber !== undefined) {
+        await this.roadNumberInput.fill(roadNumber);
+      }
+      if (roadSubNumber !== undefined) {
+        await this.roadSubNumberInput.fill(roadSubNumber);
+      }
+      if (roadStratum !== '') {
+        await this.roadDetailsInput.fill(roadDetails);
+      }
+      if (roadStratum !== undefined) {
+        await this.selectOption(this.roadStratumInput, roadStratum);
+      }
+      let telephoneIndex: number = 0; // TODO: Up to 3.
+      for (const telephone of telephones) {
+        telephoneIndex++;
+        const telephoneInput: Locator = page.locator(
+          `[formcontrolname="telefono${telephoneIndex}"]`,
+        );
+        await telephoneInput.fill(telephone);
+        if (telephoneIndex === 1) {
+          await telephoneInput.locator(plusSpanSelector).click();
+        }
+      }
+      let cellphoneIndex: number = 0; // TODO: Up to 3.
+      for (const cellphone of cellphones) {
+        cellphoneIndex++;
+        const cellphoneInput: Locator = page.locator(
+          `[formcontrolname="celular${cellphoneIndex}"]`,
+        );
+        await cellphoneInput.fill(cellphone);
+        if (cellphoneIndex === 1) {
+          await cellphoneInput.locator(plusSpanSelector).click();
+        }
+      }
+      if (Array.isArray(emailsOrReason)) {
+        // value is string[]
+        let emailIndex: number = 0; // TODO: Up to 3.
+        for (const email of emailsOrReason) {
+          emailIndex++;
+          const emailInput: Locator = page.locator(`[formcontrolname="email${emailIndex}"]`);
+          await emailInput.fill(email);
+          if (emailIndex === 1) {
+            await emailInput.locator(plusSpanSelector).click();
+          }
+        }
+      } else {
+        // value is string
+        const unknownEmailButton: Locator = page.locator('label[formcontrolname="conoceEmail"]');
+        await unknownEmailButton.click();
+        const textareaReason = page.locator('textarea[formcontrolname="razonDesconoceEmail"]');
+        await textareaReason.fill(emailsOrReason);
+      }
+      let webPageIndex: number = 0;
+      for (const webPage of webPages) {
+        webPageIndex++;
+        const webPageInput: Locator = page.locator(`[formcontrolname="paginaWeb${webPageIndex}"]`);
+        await webPageInput.fill(webPage);
+        if (webPageIndex === 1) {
+          await webPageInput.locator(plusSpanSelector).click();
+        }
+      }
+
+      const merchantNzText: string = 'Seleccione el tipo de persona natural:';
+      const merchantNzFormItem: Locator = page.locator('nz-form-item', { hasText: merchantNzText });
+      const merchantText: string = `${debtor.isMerchant ? '' : 'NO '}Comerciante`;
+      const merchantRadio: Locator = merchantNzFormItem.locator('label', { hasText: merchantText });
+      await merchantRadio.click();
+
+      const hasProceduresNzRadioGroup: Locator = page.locator(
+        'nz-radio-group[formcontrolname="tiene_procedimientos"]',
+      );
+      const hasProceduresLabel: Locator = hasProceduresNzRadioGroup.locator('label', {
+        hasText: debtor.hasMultipleDebtCollectionProcedures ? 'Si' : 'No',
+      });
+      await hasProceduresLabel.click();
 
       // TODO: Fill up to 3 telephone numbers.
       // TODO: Fill up to 3 cellphone numbers.
@@ -104,74 +237,9 @@ class DebtorSection extends BaseSection<[DebtorType[]]> {
 
       // breakpoint
 
+      await page.waitForTimeout(1000);
+
       /** 
-
-      // Address fields
-      if (debtor.address) {
-        if (debtor.address.country) {
-          await this.selectOption(
-            page.locator(getInputSelector('paisResidencia')),
-            debtor.address.country,
-          );
-        }
-        if (debtor.address.department) {
-          await this.selectOption(
-            page.locator(getInputSelector('departamento')),
-            debtor.address.department,
-          );
-        }
-        if (debtor.address.city) {
-          await this.selectOption(page.locator(getInputSelector('ciudad')), debtor.address.city);
-        }
-        if (debtor.address.mainRoad) {
-          await page.locator('input[formcontrolname="a1"]').fill(debtor.address.mainRoad);
-        }
-        if (debtor.address.roadNumber) {
-          await page.locator('input[formcontrolname="a2"]').fill(debtor.address.roadNumber);
-        }
-        if (debtor.address.complement) {
-          await page.locator('input[formcontrolname="a3"]').fill(debtor.address.complement);
-        }
-        if (debtor.address.details) {
-          await page
-            .locator('input[formcontrolname="detalleDireccion"]')
-            .fill(debtor.address.details);
-        }
-        if (debtor.address.socioeconomicStratum) {
-          await this.selectOption(
-            page.locator(getInputSelector('estrato')),
-            debtor.address.socioeconomicStratum,
-          );
-        }
-      }
-
-      // Contact
-      // if (debtor.primaryPhone) { await page.locator('input[formcontrolname="telefono1"]').fill(debtor.primaryPhone); }
-      // if (debtor.cellPhone) { await page.locator('input[formcontrolname="celular1"]').fill(debtor.cellPhone); }
-      if (typeof debtor.knowsEmail === 'boolean') {
-        const checkbox = page.locator(
-          'label[formcontrolname="conoceEmail"] input[type="checkbox"]',
-        );
-        const isChecked = await checkbox.isChecked().catch(() => false);
-        if (debtor.knowsEmail !== isChecked) {
-          await checkbox.click();
-        }
-      }
-      if (debtor.primaryEmail) {
-        await page.locator('input[formcontrolname="email1"]').fill(debtor.primaryEmail);
-      }
-      // if (debtor.webPage1) { await page.locator('input[formcontrolname="paginaWeb1"]').fill(debtor.webPage1); }
-
-      // Person type (Comerciante checkbox)
-      if (typeof debtor.isMerchant === 'boolean') {
-        const comercianteLabel = page.locator('label', { hasText: 'Comerciante' });
-        if (await comercianteLabel.count()) {
-          const comercianteInput = comercianteLabel.locator('input[type="checkbox"]');
-          const checked = await comercianteInput.isChecked().catch(() => false);
-          if (debtor.isMerchant !== checked) await comercianteInput.click();
-        }
-      }
-
       // Legal procedures
       if (typeof debtor.hasCollectionProcedures === 'boolean') {
         const radioLabel = page.locator(

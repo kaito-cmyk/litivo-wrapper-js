@@ -1,30 +1,33 @@
 import type { Locator, Page } from 'playwright';
 import { z } from 'zod';
-import { optionDivSelector, strongOptionDivSelector } from '../../constants.js';
+import { strongOptionDivSelector } from '../../constants.js';
 import Paged from './paged.js';
 
 const isoDateSchema = z.iso.date();
 
 abstract class BaseSection<T extends unknown[]> extends Paged {
-  private readonly firstOptionDiv: Locator;
-
   public constructor(page: Page) {
     super(page);
-    const optionDiv: Locator = page.locator(optionDivSelector);
-    this.firstOptionDiv = optionDiv.first();
+  }
+
+  private getOptionDiv(title: string): Locator {
+    return this.page.locator(`nz-option-item[title="${title}"]`);
   }
 
   /** Fills the input with the provided value selecting the first option. */
-  protected async fillInput(input: Locator, value: string): Promise<void> {
-    await input.click();
+  protected async fillInput(nzSelect: Locator, value: string): Promise<void> {
+    const input: Locator = nzSelect.locator('input');
+    await nzSelect.click();
     await input.fill(value);
-    this.firstOptionDiv.click();
+    const optionDiv: Locator = this.getOptionDiv(value);
+    await optionDiv.click();
     await this.page.waitForTimeout(500); // TODO: find a better way to wait for the input to be filled.
   }
 
   /** date value should be in YYYY-MM-DD format. Fill in "yyyy/mm/dd" format.
    */
-  protected async fillDateInput(input: Locator, value: string): Promise<void> {
+  protected async fillDateInput(nzDatePicker: Locator, value: string): Promise<void> {
+    const input: Locator = nzDatePicker.locator('input');
     const date: string = isoDateSchema.parse(value);
     const slashedDate: string = date.replace(/-/g, '/');
 
@@ -34,9 +37,10 @@ abstract class BaseSection<T extends unknown[]> extends Paged {
     await this.page.waitForTimeout(500); // TODO: find a better way to wait for the input to be filled.
   }
 
-  protected async selectOption(input: Locator, value: string): Promise<void> {
+  protected async selectOption(nzSelect: Locator, value: string): Promise<void> {
+    const input: Locator = nzSelect.locator('input');
     await input.click();
-    const optionDiv: Locator = this.page.locator(optionDivSelector, { hasText: value });
+    const optionDiv: Locator = this.getOptionDiv(value);
     await optionDiv.click();
   }
 
