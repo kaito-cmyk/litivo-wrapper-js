@@ -3,6 +3,7 @@
 # Secrets folder - ignore all non JSON example files.
 secrets/*
 !secrets/*.example.json
+.env
 
 # Playwright HTML report.
 playwright-report/
