@@ -3,6 +3,7 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: './tests/e2e', // Folder where Playwright will look for tests
   testMatch: '**/*.spec.ts', // Only files that end with .spec.ts will be treated as tests
+  timeout: 30000, // 30 seconds timeout for each test
 
   // Allows all tests to run in parallel (faster execution)
   // Good only if tests do not depend on each other

@@ -1,6 +1,7 @@
 import type { Locator, Page } from 'playwright';
 import { getDateInputSelector, getInputSelector } from '../../helpers.js';
 import type { DebtorType, IdDocType } from '../../models/debtor.js';
+import { CODE_TO_LABEL } from '../../models/identification-document.js';
 import BaseSection from '../bases/section.js';
 
 const plusSpanSelector: string = '+ span.ant-input-suffix';
@@ -110,7 +111,9 @@ class DebtorSection extends BaseSection<[DebtorType[]]> {
 
       await this.addDebtorButton.click();
 
-      await this.selectOption(this.idTypeInput, docType);
+      // The schema stores canonical codes (e.g. 'CC'), but the UI shows full labels
+      const displayDocType = (CODE_TO_LABEL as Record<string, string>)[docType] || docType;
+      await this.selectOption(this.idTypeInput, displayDocType);
       await this.idNumberInput.fill(docNumber);
       await this.searchButton.click();
 
@@ -218,8 +221,8 @@ class DebtorSection extends BaseSection<[DebtorType[]]> {
 
       const merchantNzText: string = 'Seleccione el tipo de persona natural:';
       const merchantNzFormItem: Locator = page.locator('nz-form-item', { hasText: merchantNzText });
-      const merchantText: string = `${debtor.isMerchant ? '' : 'NO '}Comerciante`;
-      const merchantRadio: Locator = merchantNzFormItem.locator('label', { hasText: merchantText });
+      const merchantText: string = debtor.isMerchant ? 'Comerciante' : 'No Comerciante';
+      const merchantRadio: Locator = merchantNzFormItem.locator('label').filter({ hasText: new RegExp(`^${merchantText}$`) });
       await merchantRadio.click();
 
       const hasProceduresNzRadioGroup: Locator = page.locator(
